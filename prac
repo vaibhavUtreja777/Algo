@@ -1,0 +1,153 @@
+//q1 Random quicksort
+
+#include <iostream>
+#include <vector>
+#include <cstdlib> // for rand()
+#include <ctime>   // for time()
+
+using namespace std;
+
+// Function to perform randomized quick sort
+pair<vector<int>, int> randomized_quick_sort(const vector<int>& arr) {
+    if (arr.size() <= 1) {
+        return {arr, 0}; // Base case: return the array and 0 comparisons
+    }
+
+    // Randomly select a pivot
+    int pivot_index = rand() % arr.size();
+    int pivot = arr[pivot_index];
+
+    vector<int> less_than_pivot;
+    vector<int> equal_to_pivot;
+    vector<int> greater_than_pivot;
+    
+    int comparisons = 0;
+
+    for (const int& element : arr) {
+        comparisons++; // Count comparison
+        if (element < pivot) {
+            less_than_pivot.push_back(element);
+        } else if (element > pivot) {
+            greater_than_pivot.push_back(element);
+        } else {
+            equal_to_pivot.push_back(element);
+        }
+    }
+
+    // Recursively sort the sub-arrays
+    pair<vector<int>, int> sorted_less = randomized_quick_sort(less_than_pivot);
+    pair<vector<int>, int> sorted_greater = randomized_quick_sort(greater_than_pivot);
+
+    // Combine the sorted sub-arrays and the pivot
+    vector<int> sorted_array = sorted_less.first;
+    sorted_array.insert(sorted_array.end(), equal_to_pivot.begin(), equal_to_pivot.end());
+    sorted_array.insert(sorted_array.end(), sorted_greater.first.begin(), sorted_greater.first.end());
+
+    // Calculate the total number of comparisons
+    int total_comparisons = comparisons + sorted_less.second + sorted_greater.second;
+
+    return {sorted_array, total_comparisons};
+}
+
+int main() {
+    srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
+
+    int n;
+    cout << "Enter the number of elements: ";
+    cin >> n;
+
+    vector<int> array(n);
+    cout << "Enter the elements of the array: ";
+    for (int i = 0; i < n; ++i) {
+        cin >> array[i];
+    }
+
+    pair<vector<int>, int> result = randomized_quick_sort(array);
+
+    cout << "Sorted Array: ";
+    for (const int& num : result.first) {
+        cout << num << " ";
+    }
+    cout << endl;
+    cout << "Number of Comparisons: " << result.second << endl;
+
+    return 0;
+}
+
+
+//Randomized select-sort for shortest number
+
+#include <iostream>
+#include <vector>
+#include <cstdlib> // for rand()
+#include <ctime>   // for time()
+
+using namespace std;
+
+// Function to partition the array around the pivot
+int partition(vector<int>& arr, int low, int high, int pivotIndex) {
+    int pivotValue = arr[pivotIndex];
+    swap(arr[pivotIndex], arr[high]); // Move pivot to end
+    int storeIndex = low;
+
+    for (int i = low; i < high; i++) {
+        if (arr[i] < pivotValue) {
+            swap(arr[storeIndex], arr[i]);
+            storeIndex++;
+        }
+    }
+    swap(arr[storeIndex], arr[high]); // Move pivot to its final place
+    return storeIndex; // Return the final position of the pivot
+}
+
+// Randomized Select function to find the i-th smallest element
+int randomized_select(vector<int>& arr, int low, int high, int i) {
+    if (low == high) {
+        return arr[low]; // If the list contains only one element
+    }
+
+    // Select a random pivot index
+    int pivotIndex = low + rand() % (high - low + 1);
+    pivotIndex = partition(arr, low, high, pivotIndex);
+
+    // The pivot is in its final sorted position
+    if (i == pivotIndex) {
+        return arr[i]; // Found the i-th smallest element
+    } else if (i < pivotIndex) {
+        return randomized_select(arr, low, pivotIndex - 1, i); // Search left
+    } else {
+        return randomized_select(arr, pivotIndex + 1, high, i); // Search right
+    }
+}
+
+int main() {
+    srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
+
+    int n;
+    cout << "Enter the number of elements: ";
+    cin >> n;
+
+    vector<int> array(n);
+    cout << "Enter the elements of the array: ";
+    for (int i = 0; i < n; ++i) {
+        cin >> array[i];
+    }
+
+    int i;
+    cout << "Enter the position (1-based) of the smallest element you want to find: ";
+    cin >> i;
+
+    // Convert to 0-based index
+    i -= 1;
+
+    if (i < 0 || i >= array.size()) {
+        cout << "Invalid position. Please enter a value between 1 and " << array.size() << "." << endl;
+        return 1;
+    }
+
+    int result = randomized_select(array, 0, array.size() - 1, i);
+    cout << "The " << i + 1 << "th smallest element is: " << result << endl;
+
+    return 0;
+}
+
