@@ -100,7 +100,7 @@ int partition(vector<int>& arr, int low, int high, int pivotIndex) {
     return storeIndex; // Return the final position of the pivot
 }
 
-// Randomized Select function to find the i-th smallest element
+//q2 Randomized Select function to find the i-th smallest element
 int randomized_select(vector<int>& arr, int low, int high, int i) {
     if (low == high) {
         return arr[low]; // If the list contains only one element
@@ -267,7 +267,7 @@ void computeLPSArray(string pattern, vector<int>& lps) {
     }
 }
 
-// Function to perform KMP search
+//q7 Function to perform KMP search
 void KMPSearch(string text, string pattern) {
     int m = pattern.length();
     int n = text.length();
